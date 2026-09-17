@@ -1,7 +1,8 @@
+
 # MineBit Casino — Homepage (Frontend UI)
 
 A frontend-only MineBit crypto casino homepage, 
-
+<img width="1680" height="943" alt="Screenshot 2026-09-17 at 23 43 22" src="https://github.com/user-attachments/assets/a563c1fe-eb11-4a68-a5b0-d4d086c2ce99" />
 ## Tech stack
 
 - **Next.js 16** (App Router) + React 19 + TypeScript
