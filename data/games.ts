@@ -93,6 +93,50 @@ export const liveCasino: Game[] = [
   { id: "l-saloon", title: "Blackjack VIP", provider: "Evolution", art: "blackjack", bg: ["#221206", "#4d2a0d"], accent: "#fd9535", tag: "Live" },
 ];
 
+export const tapTrader: Game = {
+  id: "tap-trader",
+  title: "Tap Trader",
+  provider: "Originals",
+  art: "tap",
+  bg: ["#0f2b1a", "#1d5a30"],
+  accent: "#4ade80",
+};
+
+export const slotsCatalog: Game[] = [
+  { id: "c-chili", title: "3 Chili Bundles: Hold And Win", provider: "NeverEnding", art: "chili", bg: ["#330d0d", "#6e1a1a"], accent: "#ff6b6b" },
+  { id: "c-sweet2500", title: "Sweet Bonanza 2500", provider: "Pragmatic Play", art: "sweet", bg: ["#40104a", "#7a1e8f"], accent: "#f0abfc" },
+  { id: "c-duck", title: "Duck Hunters", provider: "Nolimit City", art: "duck", bg: ["#0f2f1a", "#1e5a30"], accent: "#4ade80" },
+  { id: "c-hellcoin", title: "Hellcoin Forge: Hold And Win", provider: "NeverEnding", art: "forge", bg: ["#260d1a", "#521b38"], accent: "#f472b6" },
+  { id: "c-sweet1000", title: "Sweet Bonanza 1000", provider: "Pragmatic Play", art: "sweet", bg: ["#3d1030", "#7a1e5c"], accent: "#ff7ad9" },
+  { id: "c-bandit", title: "Le Bandit", provider: "Hacksaw", art: "bandit", bg: ["#12240f", "#2c5a1e"], accent: "#a3e635" },
+  { id: "c-sugar", title: "Sugar Rush 1000", provider: "Pragmatic Play", art: "candy", bg: ["#3a1040", "#7a1e78"], accent: "#e879f9" },
+  { id: "c-jackpot", title: "Jackpot Train", provider: "Relax", art: "chest", bg: ["#231a08", "#57450f"], accent: "#ffd34d" },
+  { id: "c-prechaun", title: "Le Prechaun", provider: "Hacksaw", art: "caishen", bg: ["#0f2a12", "#1d5a24"], accent: "#4ade80" },
+  { id: "c-ultimate", title: "Ultimate Coins: Hold & Win", provider: "NeverEnding", art: "caishen", bg: ["#2e230c", "#66541a"], accent: "#fde047" },
+  { id: "c-jade", title: "Jade Legends", provider: "Pragmatic Play", art: "jade", bg: ["#0d2b22", "#155e4b"], accent: "#34d399" },
+  { id: "c-pissed", title: "Pissed", provider: "Shadylady", art: "demon", bg: ["#101c33", "#274b8f"], accent: "#7dd3fc" },
+  { id: "c-sunnydaze", title: "Sunnydaze Asylum", provider: "Pragmatic Play", art: "demon", bg: ["#260d20", "#571b45"], accent: "#f0abfc" },
+  { id: "c-dandy", title: "Dandy Diamonds", provider: "Hacksaw", art: "jade", bg: ["#1a1033", "#3b2273"], accent: "#a78bfa" },
+  { id: "c-bass", title: "Big Bass Blast", provider: "Pragmatic Play", art: "bass", bg: ["#082a3d", "#0e4a6b"], accent: "#38bdf8" },
+  { id: "c-hooligan", title: "Le Hooligan", provider: "Hacksaw", art: "bandit", bg: ["#2b1608", "#59300f"], accent: "#fb923c" },
+  { id: "c-gates", title: "Gates of Olympus 1000", provider: "Pragmatic Play", art: "zeus", bg: ["#2a1f08", "#6b4e12"], accent: "#ffd34d" },
+  { id: "c-wanted", title: "Wanted Dead or a Wild", provider: "Hacksaw", art: "wanted", bg: ["#2b1608", "#59300f"], accent: "#fb923c" },
+  { id: "c-snoop", title: "Snoop Dogg Dollars", provider: "BGaming", art: "dog", bg: ["#0f2f1a", "#256b3a"], accent: "#6ee7b7" },
+  { id: "c-anubis", title: "Fury of Anubis", provider: "Pragmatic Play", art: "zeus", bg: ["#241a08", "#57450f"], accent: "#fbbf24" },
+  { id: "c-mlk", title: "Mlk Voyage", provider: "Delulu", art: "aviator", bg: ["#2b1030", "#5c1a45"], accent: "#f266c1" },
+  { id: "c-dusty", title: "Dusty Duel", provider: "BGaming", art: "wanted", bg: ["#0f2a24", "#1d5a4e"], accent: "#5eead4" },
+  { id: "c-death", title: "Death Dominion", provider: "Pragmatic Play", art: "forge", bg: ["#1c1033", "#3d1f6e"], accent: "#c084fc" },
+  { id: "c-digger", title: "Le Digger", provider: "Hacksaw", art: "bandit", bg: ["#331708", "#6e3410"], accent: "#fd9535" },
+  { id: "c-trap", title: "Trap Tower", provider: "Shadylady", art: "tower", bg: ["#1f2a10", "#3f5218"], accent: "#b8e62e" },
+  { id: "c-sugarpop", title: "Sugar Pop", provider: "Betsoft", art: "candy", bg: ["#40104a", "#8f1e6b"], accent: "#f9a8d4" },
+  { id: "c-divine", title: "Divine Queen", provider: "BGaming", art: "caishen", bg: ["#0d2b22", "#1a6e52"], accent: "#6ee7b7" },
+  { id: "c-doghouse", title: "The Dog House Megaways", provider: "Pragmatic Play", art: "doghouse", bg: ["#331708", "#6e3410"], accent: "#fd9535" },
+  { id: "c-opa", title: "Opa Santorini!", provider: "Hacksaw", art: "office", bg: ["#101a2e", "#2c4d80"], accent: "#93c5fd" },
+  { id: "c-fisherman", title: "Le Fisherman", provider: "Hacksaw", art: "bass", bg: ["#0f2a24", "#166e60"], accent: "#5eead4" },
+  { id: "c-emberfall", title: "Emberfall", provider: "Slotmill Games", art: "forge", bg: ["#330d0d", "#7a1e1e"], accent: "#ff8a5c" },
+  { id: "c-spice", title: "Spice", provider: "NetEnt", art: "chili", bg: ["#2b0d20", "#5c1a3a"], accent: "#fb7185" },
+];
+
 export interface TopWin {
   id: string;
   player: string;

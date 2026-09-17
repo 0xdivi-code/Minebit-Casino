@@ -7,6 +7,7 @@ import Header from "./Header";
 import BottomNav from "./BottomNav";
 import Footer from "./Footer";
 import AuthModal from "../auth/AuthModal";
+import SearchModal from "../search/SearchModal";
 
 export type AuthMode = "login" | "register";
 
@@ -19,6 +20,9 @@ interface ShellState {
   openAuth: (mode: AuthMode) => void;
   closeAuth: () => void;
   switchAuth: (mode: AuthMode) => void;
+  searchOpen: boolean;
+  openSearch: () => void;
+  closeSearch: () => void;
 }
 
 const ShellContext = createContext<ShellState>({
@@ -30,6 +34,9 @@ const ShellContext = createContext<ShellState>({
   openAuth: () => {},
   closeAuth: () => {},
   switchAuth: () => {},
+  searchOpen: false,
+  openSearch: () => {},
+  closeSearch: () => {},
 });
 
 export const useShell = () => useContext(ShellContext);
@@ -38,14 +45,29 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [authMode, setAuthMode] = useState<AuthMode | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const toggleCollapsed = useCallback(() => setCollapsed((c) => !c), []);
   const openAuth = useCallback((mode: AuthMode) => setAuthMode(mode), []);
   const closeAuth = useCallback(() => setAuthMode(null), []);
   const switchAuth = useCallback((mode: AuthMode) => setAuthMode(mode), []);
+  const openSearch = useCallback(() => setSearchOpen(true), []);
+  const closeSearch = useCallback(() => setSearchOpen(false), []);
 
   return (
     <ShellContext.Provider
-      value={{ collapsed, toggleCollapsed, mobileOpen, setMobileOpen, authMode, openAuth, closeAuth, switchAuth }}
+      value={{
+        collapsed,
+        toggleCollapsed,
+        mobileOpen,
+        setMobileOpen,
+        authMode,
+        openAuth,
+        closeAuth,
+        switchAuth,
+        searchOpen,
+        openSearch,
+        closeSearch,
+      }}
     >
       <Sidebar />
       <Header />
@@ -63,6 +85,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       {/* mobile bottom padding so content isn't hidden behind bottom nav */}
       <div className="h-[68px] lg:hidden" />
       <AuthModal />
+      <SearchModal />
     </ShellContext.Provider>
   );
 }

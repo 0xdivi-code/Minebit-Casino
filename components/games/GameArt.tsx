@@ -220,6 +220,16 @@ function Motif({ art, accent }: { art: string; accent: string }) {
           <text x="60" y="100" textAnchor="middle" fontSize="13" fontWeight="700" fill={accent}>2.00x PAYOUT</text>
         </svg>
       );
+    case "tap":
+      return (
+        <svg viewBox="0 0 120 120" className={common}>
+          <circle cx="60" cy="60" r="44" fill="none" stroke={accent} strokeWidth="3" opacity="0.4" />
+          <circle cx="60" cy="60" r="30" fill="none" stroke={accent} strokeWidth="3" opacity="0.65" />
+          <circle cx="60" cy="60" r="17" fill={accent} />
+          <path d="M60 47l4 8 9 1-6.5 6 1.5 9-8-4.5L52 71l1.5-9-6.5-6 9-1z" fill="#101620" />
+          <path d="M88 88l6-2-2 6-8 8-4-4z" fill="#FDFDFD" opacity="0.9" />
+        </svg>
+      );
     /* ------- slots & live motifs ------- */
     case "sweet":
     case "candy":

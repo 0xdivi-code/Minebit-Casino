@@ -2,6 +2,7 @@
 
 import { ArrowUp, Search, ShieldCheck } from "lucide-react";
 import { Logo } from "../ui/Logo";
+import { useShell } from "./AppShell";
 import { cryptoMethods, footerGroups } from "@/data/content";
 import { DiscordIcon, FacebookIcon, InstagramIcon, TelegramIcon, XSocialIcon } from "../ui/Icons";
 
@@ -14,6 +15,7 @@ const socials = [
 ];
 
 export default function Footer() {
+  const { openSearch } = useShell();
   return (
     <footer className="border-t border-line bg-abyss">
       <div className="mx-auto w-full max-w-[1440px] px-4 py-10 md:px-6 lg:px-8">
@@ -113,6 +115,7 @@ export default function Footer() {
         <button
           type="button"
           aria-label="Search games"
+          onClick={openSearch}
           className="flex h-12 w-12 items-center justify-center rounded-main border border-emerald-brand bg-neon text-slate-deep transition-colors hover:bg-emerald-brand"
         >
           <Search className="h-5 w-5" />

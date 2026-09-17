@@ -1,12 +1,12 @@
 "use client";
 
-import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Logo } from "../ui/Logo";
 import { BtnDark, BtnPrimary } from "../ui/Buttons";
 import { useShell } from "./AppShell";
 
 export default function Header() {
-  const { collapsed, toggleCollapsed, setMobileOpen, openAuth } = useShell();
+  const { collapsed, setMobileOpen, openAuth } = useShell();
 
   return (
     <header
@@ -25,17 +25,7 @@ export default function Header() {
           <Menu className="h-5 w-5" />
         </button>
 
-        {/* desktop collapse */}
-        <button
-          type="button"
-          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-          onClick={toggleCollapsed}
-          className="hidden h-12 w-12 items-center justify-center rounded-main bg-navy text-muted-blue transition-colors hover:bg-navy-hover hover:text-cream lg:flex"
-        >
-          {collapsed ? <PanelLeftOpen className="h-5 w-5" /> : <PanelLeftClose className="h-5 w-5" />}
-        </button>
-
-        <Logo className="ml-1" />
+        <Logo />
 
         <div className="ml-auto flex items-center">
           <BtnDark onClick={() => openAuth("login")} className="ml-4 hidden px-8! sm:flex">
