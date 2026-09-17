@@ -94,6 +94,17 @@ export function MetamaskIcon({ className }: { className?: string }) {
   );
 }
 
+export function TelegramPlaneIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden>
+      <path
+        fill="#37AEE2"
+        d="M21.9 4.6L2.7 12.2c-.8.3-.8 1.4.1 1.6l4.7 1.4 1.8 5.6c.3.8 1.3.9 1.8.2l2.6-2.8 4.9 3.6c.6.5 1.6.1 1.8-.7l2-15.3c.1-1-.9-1.6-1.5-1.2zM8.5 13.1l9.4-5.7c.2-.1.4.1.2.3l-7.7 7-.3 3.2c0 .2-.3.3-.4.1l-1.2-5z"
+      />
+    </svg>
+  );
+}
+
 /* ---------- footer socials ---------- */
 
 export function XSocialIcon({ className }: { className?: string }) {

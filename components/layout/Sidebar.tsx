@@ -72,6 +72,7 @@ function ProfitShareBanner() {
 }
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
+  const { openAuth } = useShell();
   const [mode, setMode] = useState<"casino" | "sport">("casino");
   const [promoOpen, setPromoOpen] = useState(true);
   const [langOpen, setLangOpen] = useState(false);

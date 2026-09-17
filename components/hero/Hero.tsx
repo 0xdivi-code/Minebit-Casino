@@ -5,6 +5,7 @@ import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { BtnPrimary } from "../ui/Buttons";
 import { GoogleIcon, MetamaskIcon, TelegramIcon } from "../ui/Icons";
+import { useShell } from "../layout/AppShell";
 
 const socials = [
   { label: "Continue with Google", Icon: GoogleIcon },
@@ -44,6 +45,7 @@ function FeatureCard({ title, href, src, alt }: { title: string; href: string; s
 }
 
 export default function Hero() {
+  const { openAuth } = useShell();
   return (
     <section aria-label="Welcome to MineBit" className="relative">
       {/* backdrop treatment */}
@@ -69,7 +71,10 @@ export default function Hero() {
             20% of House Profits, back to the players
           </p>
 
-          <BtnPrimary className="mx-auto mt-5 w-full max-w-[390px] text-sm! md:mx-0 md:mt-6 md:max-w-[240px]">
+          <BtnPrimary
+            onClick={() => openAuth("register")}
+            className="mx-auto mt-5 w-full max-w-[390px] text-sm! md:mx-0 md:mt-6 md:max-w-[240px]"
+          >
             Register
           </BtnPrimary>
 
@@ -83,6 +88,7 @@ export default function Hero() {
                 type="button"
                 aria-label={label}
                 title={label}
+                onClick={() => openAuth("register")}
                 className="flex min-h-[50px] items-center justify-center rounded-main bg-navy p-3.5 transition-colors duration-300 hover:bg-navy-hover"
               >
                 <Icon className="block h-[22px] w-[22px]" />

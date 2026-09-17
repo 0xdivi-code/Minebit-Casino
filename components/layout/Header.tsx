@@ -6,7 +6,7 @@ import { BtnDark, BtnPrimary } from "../ui/Buttons";
 import { useShell } from "./AppShell";
 
 export default function Header() {
-  const { collapsed, toggleCollapsed, setMobileOpen } = useShell();
+  const { collapsed, toggleCollapsed, setMobileOpen, openAuth } = useShell();
 
   return (
     <header
@@ -38,8 +38,12 @@ export default function Header() {
         <Logo className="ml-1" />
 
         <div className="ml-auto flex items-center">
-          <BtnDark className="ml-4 hidden px-8! sm:flex">Log In</BtnDark>
-          <BtnPrimary className="ml-2 px-6! sm:px-8!">Register</BtnPrimary>
+          <BtnDark onClick={() => openAuth("login")} className="ml-4 hidden px-8! sm:flex">
+            Log In
+          </BtnDark>
+          <BtnPrimary onClick={() => openAuth("register")} className="ml-2 px-6! sm:px-8!">
+            Register
+          </BtnPrimary>
         </div>
       </div>
     </header>
