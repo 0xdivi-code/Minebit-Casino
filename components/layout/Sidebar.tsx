@@ -128,6 +128,127 @@ function ProfitShareBanner() {
   );
 }
 
+function AccordionSection({
+  sectionId,
+  title,
+  href,
+  icon,
+  items,
+  expanded,
+  onToggle,
+  onNavigate,
+  pathname,
+}: {
+  sectionId: string;
+  title: string;
+  href: string;
+  icon: string;
+  items: NavItem[];
+  expanded: boolean;
+  onToggle: () => void;
+  onNavigate?: () => void;
+  pathname: string;
+}) {
+  const titleCls = expanded ? "text-neon" : "text-muted-blue";
+  return (
+    <div className="flex-none overflow-hidden rounded-xl bg-navy">
+      {/* header row — always fully visible */}
+      <div className={cn("flex items-center gap-3 px-3 py-3", expanded && "border-b border-line/60")}>
+        <Link
+          href={href}
+          onClick={onNavigate}
+          className={cn(
+            "flex min-w-0 flex-1 items-center gap-3 text-[15px] font-semibold transition-colors hover:text-cream",
+            titleCls
+          )}
+        >
+          <SectionIcon name={icon} className={cn("h-5 w-5 flex-none", titleCls)} />
+          <span className="truncate">{title}</span>
+        </Link>
+        <button
+          type="button"
+          onClick={onToggle}
+          aria-expanded={expanded}
+          aria-label={`${expanded ? "Collapse" : "Expand"} ${title}`}
+          className={cn(
+            "flex-none rounded-md p-1 transition-colors",
+            expanded ? "text-neon hover:text-cream" : "text-muted-blue hover:text-cream"
+          )}
+        >
+          <ChevronDown className={cn("block h-3.5 w-3.5 transition-transform duration-300", expanded && "rotate-180")} />
+        </button>
+      </div>
+
+      {/* collapsible body — pure CSS animation, can never freeze mid-height */}
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-300 ease-out",
+          expanded ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+        )}
+      >
+        <div className="min-h-0 overflow-hidden" inert={!expanded}>
+          {sectionId === "promotions" && (
+            <div className="px-1.5 pt-1.5">
+              {tournaments.map((t) => (
+                <Link
+                  key={t.label}
+                  href="/promotions"
+                  onClick={onNavigate}
+                  tabIndex={expanded ? undefined : -1}
+                  className="flex items-center gap-2.5 rounded-xl border border-transparent bg-panel p-2 transition-colors hover:border-line-soft hover:bg-slate-deep"
+                >
+                  <span className="flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-slate-deep">
+                    <Trophy className="h-6 w-6 text-indigo-soft" strokeWidth={1.6} />
+                  </span>
+                  <span className="flex min-w-0 flex-col">
+                    <strong className="text-sm font-bold text-fog">{t.amount}</strong>
+                    <span className="text-[11px] text-muted-blue">{t.label}</span>
+                  </span>
+                  <span className="ml-auto flex-none rounded-md bg-indigo-soft px-2 py-2 text-[11px] font-bold text-black">
+                    {t.countdown}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {/* sub-list scrolls internally when long; never pushes the page */}
+          <ul className="max-h-72 flex flex-col gap-0.5 overflow-y-auto overscroll-contain px-1.5 pb-2 pt-1.5">
+            {items.map((item) => {
+              const active = item.href === pathname;
+              return (
+                <li key={item.label} className="flex-none">
+                  <Link
+                    href={item.href}
+                    onClick={onNavigate}
+                    tabIndex={expanded ? undefined : -1}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                      active ? "text-neon" : "text-muted-blue hover:bg-white/5 hover:text-cream"
+                    )}
+                  >
+                    {active && (
+                      <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-neon" />
+                    )}
+                    <SectionIcon name={item.icon} className="h-5 w-5 flex-none" />
+                    <span className="truncate">{item.label}</span>
+                    {item.badge && (
+                      <span className="ml-auto flex-none rounded-md bg-neon/15 px-2 py-1 text-[11px] font-bold text-neon">
+                        {item.badge}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
   const { openSearch, openWallet, toggleCollapsed } = useShell();
   const pathname = usePathname();
@@ -147,16 +268,11 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   const toggle = (id: string) => setOpen((o) => ({ ...o, [id]: !o[id] }));
 
-  const itemCls = (active: boolean) =>
-    cn(
-      "relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-      active ? "text-neon" : "text-muted-blue hover:bg-white/5 hover:text-cream"
-    );
-
   return (
-    <div className="flex h-full flex-col gap-2 overflow-y-auto px-3 pb-6 pt-24 lg:pt-[104px]">
+    // sidebar scrolls independently — the page behind never moves
+    <div className="flex h-full flex-col gap-2 overflow-y-auto overscroll-y-contain px-3 pb-6 pt-24 lg:pt-[104px]">
       {/* Casino / Sport toggle + collapse */}
-      <div className="flex gap-2">
+      <div className="flex flex-none gap-2">
         <div className="flex flex-1 gap-1 rounded-xl border border-line p-1" role="tablist" aria-label="Product">
           <Link
             href="/lobby"
@@ -185,131 +301,62 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           type="button"
           onClick={toggleCollapsed}
           aria-label="Collapse sidebar"
-          className="hidden h-auto w-12 flex-none items-center justify-center rounded-xl bg-navy text-muted-blue transition-colors hover:bg-navy-hover hover:text-cream lg:flex"
+          className="hidden w-12 flex-none items-center justify-center rounded-xl bg-navy text-muted-blue transition-colors hover:bg-navy-hover hover:text-cream lg:flex"
         >
           <PanelLeftClose className="h-5 w-5" />
         </button>
       </div>
 
-      <ProfitShareBanner />
+      <div className="flex-none">
+        <ProfitShareBanner />
+      </div>
 
       {/* Search */}
       <button
         type="button"
         onClick={openSearch}
-        className="flex w-full items-center gap-3 rounded-xl border border-line-soft px-4 py-2.5 text-sm font-medium text-muted-blue transition-colors hover:bg-navy-hover"
+        className="flex w-full flex-none items-center gap-3 rounded-xl border border-line-soft px-4 py-2.5 text-sm font-medium text-muted-blue transition-colors hover:bg-navy-hover"
       >
         <Search className="h-4 w-4" />
         Search
       </button>
 
       {/* Accordion sections */}
-      {sidebarSections.map((section) => {
-        const expanded = !!open[section.id];
-        const hasActive =
-          section.items.some((i) => i.href === pathname) || section.href === pathname;
-        return (
-          <div key={section.id} className="overflow-hidden rounded-xl bg-navy">
-            <div
-              className={cn(
-                "flex items-center gap-3 px-3 py-3",
-                expanded && "border-b border-line/60"
-              )}
-            >
-              <Link
-                href={section.href}
-                onClick={onNavigate}
-                className={cn(
-                  "flex flex-1 items-center gap-3 text-[15px] font-semibold transition-colors",
-                  expanded || hasActive ? "text-neon" : "text-muted-blue hover:text-cream"
-                )}
-              >
-                <SectionIcon
-                  name={section.icon}
-                  className={cn("h-5 w-5", expanded || hasActive ? "text-neon" : "text-muted-blue")}
-                />
-                {section.title}
-              </Link>
-              <button
-                type="button"
-                onClick={() => toggle(section.id)}
-                aria-expanded={expanded}
-                aria-label={`${expanded ? "Collapse" : "Expand"} ${section.title}`}
-                className={cn("p-1 transition-colors", expanded ? "text-neon" : "text-muted-blue hover:text-cream")}
-              >
-                <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", expanded && "rotate-180")} />
-              </button>
-            </div>
-
-            <AnimatePresence initial={false}>
-              {expanded && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.22 }}
-                  className="overflow-hidden"
-                >
-                  <div className="flex flex-col gap-0.5 px-1.5 pb-2 pt-1">
-                    {/* tournament card inside Promotions */}
-                    {section.id === "promotions" &&
-                      tournaments.map((t) => (
-                        <Link
-                          key={t.label}
-                          href="/promotions"
-                          onClick={onNavigate}
-                          className="mb-1 flex items-center gap-2.5 rounded-xl border border-transparent bg-panel p-2 transition-colors hover:border-line-soft hover:bg-slate-deep"
-                        >
-                          <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-deep text-xl">
-                            🐉
-                          </span>
-                          <span className="flex flex-col">
-                            <strong className="text-sm font-bold text-fog">{t.amount}</strong>
-                            <span className="text-[11px] text-muted-blue">{t.label}</span>
-                          </span>
-                          <span className="ml-auto rounded-md bg-indigo-soft px-2 py-2 text-[11px] font-bold text-black">
-                            {t.countdown}
-                          </span>
-                        </Link>
-                      ))}
-
-                    {section.items.map((item: NavItem) => {
-                      const active = item.href === pathname;
-                      return (
-                        <Link key={item.label} href={item.href} onClick={onNavigate} className={itemCls(active)}>
-                          {active && (
-                            <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-neon" />
-                          )}
-                          <SectionIcon name={item.icon} className="h-5 w-5" />
-                          {item.label}
-                          {item.badge && (
-                            <span className="ml-auto rounded-md bg-neon/15 px-2 py-1 text-[11px] font-bold text-neon">
-                              {item.badge}
-                            </span>
-                          )}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        );
-      })}
+      {sidebarSections.map((section) => (
+        <AccordionSection
+          key={section.id}
+          sectionId={section.id}
+          title={section.title}
+          href={section.href}
+          icon={section.icon}
+          items={section.items}
+          expanded={!!open[section.id]}
+          onToggle={() => toggle(section.id)}
+          onNavigate={onNavigate}
+          pathname={pathname}
+        />
+      ))}
 
       {/* Plain links */}
-      <nav aria-label="Primary" className="mt-1 px-1">
+      <nav aria-label="Primary" className="mt-1 flex-none px-1">
         <ul className="flex flex-col gap-0.5">
           {sidebarPlainLinks.map((item) => {
             const active = item.href === pathname;
             return (
               <li key={item.label}>
-                <Link href={item.href} onClick={onNavigate} className={itemCls(active)}>
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    active ? "text-neon" : "text-muted-blue hover:bg-white/5 hover:text-cream"
+                  )}
+                >
                   {active && (
                     <span className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-neon" />
                   )}
-                  <SectionIcon name={item.icon} className="h-5 w-5" />
+                  <SectionIcon name={item.icon} className="h-5 w-5 flex-none" />
                   {item.label}
                 </Link>
               </li>
@@ -319,7 +366,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
 
       {/* Payments + buy crypto */}
-      <div className="mt-3 px-1">
+      <div className="mt-3 flex-none px-1">
         <div className="flex items-center justify-between gap-1 px-1 py-1.5">
           <ApplePayIcon />
           <MastercardIcon />
@@ -332,13 +379,13 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         </BtnPrimary>
       </div>
 
-      <BtnDark className="mt-1 w-full justify-start!">
+      <BtnDark className="mt-1 w-full flex-none justify-start!">
         <Headset className="h-5 w-5" />
         Live Support
       </BtnDark>
 
       {/* Language */}
-      <div className="relative">
+      <div className="relative flex-none">
         <button
           type="button"
           onClick={() => setLangOpen((o) => !o)}
@@ -374,7 +421,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
         </AnimatePresence>
       </div>
 
-      <div className="mt-1 flex gap-2">
+      <div className="mt-1 flex flex-none gap-2">
         <a
           href="https://mine.partners/"
           target="_blank"
@@ -406,12 +453,12 @@ function MiniRail() {
     { label: "VIP Club", icon: Crown, href: "/vip-club" },
   ];
   return (
-    <div className="hidden h-full flex-col items-center gap-1 overflow-y-auto px-2 pb-6 pt-24 lg:flex">
+    <div className="hidden h-full flex-col items-center gap-1 overflow-y-auto overscroll-y-contain px-2 pb-6 pt-24 lg:flex">
       <button
         type="button"
         onClick={toggleCollapsed}
         aria-label="Expand sidebar"
-        className="mb-2 flex h-11 w-11 items-center justify-center rounded-main bg-navy text-muted-blue transition-colors hover:bg-navy-hover hover:text-neon"
+        className="mb-2 flex h-11 w-11 flex-none items-center justify-center rounded-main bg-navy text-muted-blue transition-colors hover:bg-navy-hover hover:text-neon"
       >
         <PanelLeftOpen className="h-5 w-5" />
       </button>
@@ -419,7 +466,7 @@ function MiniRail() {
         type="button"
         onClick={openSearch}
         aria-label="Search"
-        className="flex h-11 w-11 items-center justify-center rounded-main text-muted-blue transition-colors hover:bg-navy hover:text-neon"
+        className="flex h-11 w-11 flex-none items-center justify-center rounded-main text-muted-blue transition-colors hover:bg-navy hover:text-neon"
       >
         <Search className="h-5 w-5" strokeWidth={1.9} />
       </button>
@@ -429,7 +476,7 @@ function MiniRail() {
           href={href}
           title={label}
           aria-label={label}
-          className="flex h-11 w-11 items-center justify-center rounded-main text-muted-blue transition-colors hover:bg-navy hover:text-neon"
+          className="flex h-11 w-11 flex-none items-center justify-center rounded-main text-muted-blue transition-colors hover:bg-navy hover:text-neon"
         >
           <Icon className="h-5 w-5" strokeWidth={1.9} />
         </Link>
