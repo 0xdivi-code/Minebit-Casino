@@ -6,6 +6,7 @@ import { Check, Eye, EyeOff, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useShell } from "../layout/AppShell";
 import { GoogleIcon, MetamaskIcon, TelegramPlaneIcon } from "../ui/Icons";
+import { connectErrorCopy, connectMetaMask, formatAddress } from "@/lib/wallet";
 
 type Status = "idle" | "loading" | "success";
 
@@ -35,6 +36,7 @@ export default function AuthModal() {
   const [password, setPassword] = useState("");
   const [promo, setPromo] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+  const [mm, setMm] = useState<{ state: "idle" | "connecting" | "done" | "fail"; account?: string; reason?: string }>({ state: "idle" });
 
   // escape to close + scroll lock
   useEffect(() => {
@@ -53,8 +55,17 @@ export default function AuthModal() {
     if (!open) {
       setStatus("idle");
       setShowPassword(false);
+      setMm({ state: "idle" });
     }
   }, [open ]);
+
+  const connectWallet = async () => {
+    if (mm.state === "connecting") return;
+    setMm({ state: "connecting" });
+    const res = await connectMetaMask();
+    if (res.ok) setMm({ state: "done", account: res.account });
+    else setMm({ state: "fail", reason: res.reason });
+  };
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -253,11 +264,29 @@ export default function AuthModal() {
               <button
                 type="button"
                 aria-label="Continue with MetaMask"
-                className="flex items-center justify-center rounded-xl bg-navy py-3.5 transition-colors hover:bg-navy-hover"
+                onClick={connectWallet}
+                disabled={mm.state === "connecting"}
+                className="flex items-center justify-center rounded-xl bg-navy py-3.5 transition-colors hover:bg-navy-hover disabled:opacity-70"
               >
-                <MetamaskIcon className="h-6 w-6" />
+                {mm.state === "connecting" ? (
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-blue" />
+                ) : mm.state === "done" ? (
+                  <Check className="h-6 w-6 text-neon" strokeWidth={3} />
+                ) : (
+                  <MetamaskIcon className="h-6 w-6" />
+                )}
               </button>
             </div>
+            {mm.state === "done" && mm.account && (
+              <p className="mt-3 text-center text-xs font-semibold text-neon">
+                Wallet connected: {formatAddress(mm.account)}
+              </p>
+            )}
+            {mm.state === "fail" && (
+              <p className="mt-3 text-center text-xs font-medium text-[#f59e0b]">
+                {connectErrorCopy[mm.reason ?? "error"]}
+              </p>
+            )}
 
             {/* switch */}
             <p className="mt-6 text-center text-sm text-muted-blue">

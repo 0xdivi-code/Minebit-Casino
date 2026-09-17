@@ -31,7 +31,7 @@ export function VisaIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 40 22" className={cn("h-[22px] w-auto", className)} aria-label="Visa">
       <rect width="40" height="22" rx="4" fill="#101620" stroke="#1E2736" />
-      <text x="20" y="15.5" textAnchor="middle" fontSize="10.5" fontWeight="800" fontStyle="italic" fill="#1A1F71" fontFamily="Inter,sans-serif">
+      <text x="20" y="15.5" textAnchor="middle" fontSize="10.5" fontWeight="800" fontStyle="italic" fill="#8EA2FF" fontFamily="Inter,sans-serif">
         VISA
       </text>
     </svg>

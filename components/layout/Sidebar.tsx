@@ -270,7 +270,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     // sidebar scrolls independently — the page behind never moves
-    <div className="flex h-full flex-col gap-2 overflow-y-auto overscroll-y-contain px-3 pb-6 pt-24 lg:pt-[104px]">
+    <div className="flex h-full flex-col gap-2 overflow-y-auto overscroll-y-contain px-3 pb-6 pt-14 lg:pt-3">
       {/* Casino / Sport toggle + collapse */}
       <div className="flex flex-none gap-2">
         <div className="flex flex-1 gap-1 rounded-xl border border-line p-1" role="tablist" aria-label="Product">
@@ -453,7 +453,7 @@ function MiniRail() {
     { label: "VIP Club", icon: Crown, href: "/vip-club" },
   ];
   return (
-    <div className="hidden h-full flex-col items-center gap-1 overflow-y-auto overscroll-y-contain px-2 pb-6 pt-24 lg:flex">
+    <div className="hidden h-full flex-col items-center gap-1 overflow-y-auto overscroll-y-contain px-2 pb-6 pt-3 lg:flex">
       <button
         type="button"
         onClick={toggleCollapsed}

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Check, Loader2 } from "lucide-react";
+import { connectMetaMask } from "@/lib/wallet";
 import { BtnPrimary } from "../ui/Buttons";
 import { GoogleIcon, MetamaskIcon, TelegramIcon } from "../ui/Icons";
 import { useShell } from "../layout/AppShell";
@@ -46,6 +48,16 @@ function FeatureCard({ title, href, src, alt }: { title: string; href: string; s
 
 export default function Hero() {
   const { openAuth } = useShell();
+  const [mmState, setMmState] = useState<"idle" | "connecting" | "done" | "fail">("idle");
+
+  const connectWallet = async () => {
+    if (mmState === "connecting") return;
+    setMmState("connecting");
+    const res = await connectMetaMask();
+    setMmState(res.ok ? "done" : "fail");
+    window.setTimeout(() => setMmState("idle"), 2500);
+  };
+
   return (
     <section aria-label="Welcome to MineBit" className="relative">
       {/* backdrop treatment */}
@@ -82,18 +94,29 @@ export default function Hero() {
             Or continue with
           </p>
           <div className="flex justify-center gap-2 lg:justify-start">
-            {socials.map(({ label, Icon }) => (
-              <button
-                key={label}
-                type="button"
-                aria-label={label}
-                title={label}
-                onClick={() => openAuth("register")}
-                className="flex min-h-[50px] items-center justify-center rounded-main bg-navy p-3.5 transition-colors duration-300 hover:bg-navy-hover"
-              >
-                <Icon className="block h-[22px] w-[22px]" />
-              </button>
-            ))}
+            {socials.map(({ label, Icon }) => {
+              const isMm = label === "Continue with MetaMask";
+              return (
+                <button
+                  key={label}
+                  type="button"
+                  aria-label={isMm && mmState !== "idle" ? `MetaMask: ${mmState}` : label}
+                  title={label}
+                  onClick={() => (isMm ? connectWallet() : openAuth("register"))}
+                  className="flex min-h-[50px] min-w-[50px] items-center justify-center rounded-main bg-navy p-3.5 transition-colors duration-300 hover:bg-navy-hover"
+                >
+                  {isMm && mmState === "connecting" ? (
+                    <Loader2 className="h-[22px] w-[22px] animate-spin text-muted-blue" />
+                  ) : isMm && mmState === "done" ? (
+                    <Check className="h-[22px] w-[22px] text-neon" strokeWidth={3} />
+                  ) : isMm && mmState === "fail" ? (
+                    <Icon className="block h-[22px] w-[22px] opacity-40 saturate-0" />
+                  ) : (
+                    <Icon className="block h-[22px] w-[22px]" />
+                  )}
+                </button>
+              );
+            })}
           </div>
         </motion.div>
 
