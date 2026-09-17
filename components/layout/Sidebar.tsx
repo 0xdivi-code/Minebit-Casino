@@ -129,7 +129,7 @@ function ProfitShareBanner() {
 }
 
 function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
-  const { openAuth, openSearch, toggleCollapsed } = useShell();
+  const { openSearch, openWallet, toggleCollapsed } = useShell();
   const pathname = usePathname();
   const [open, setOpen] = useState<Record<string, boolean>>({ promotions: true, casino: true, originals: true });
   const [langOpen, setLangOpen] = useState(false);
@@ -326,7 +326,7 @@ function SidebarBody({ onNavigate }: { onNavigate?: () => void }) {
           <VisaIcon />
           <GooglePayIcon />
         </div>
-        <BtnPrimary onClick={() => openAuth("register")} className="mt-1 w-full justify-start!">
+        <BtnPrimary onClick={() => openWallet("buy")} className="mt-1 w-full justify-start!">
           <Wallet className="h-5 w-5" />
           Buy crypto
         </BtnPrimary>

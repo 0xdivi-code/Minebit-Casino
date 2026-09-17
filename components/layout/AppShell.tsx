@@ -8,8 +8,10 @@ import BottomNav from "./BottomNav";
 import Footer from "./Footer";
 import AuthModal from "../auth/AuthModal";
 import SearchModal from "../search/SearchModal";
+import WalletModal from "../wallet/WalletModal";
 
 export type AuthMode = "login" | "register";
+export type WalletTab = "deposit" | "withdraw" | "buy";
 
 interface ShellState {
   collapsed: boolean;
@@ -23,6 +25,10 @@ interface ShellState {
   searchOpen: boolean;
   openSearch: () => void;
   closeSearch: () => void;
+  walletTab: WalletTab | null;
+  openWallet: (tab?: WalletTab) => void;
+  closeWallet: () => void;
+  switchWalletTab: (tab: WalletTab) => void;
 }
 
 const ShellContext = createContext<ShellState>({
@@ -37,6 +43,10 @@ const ShellContext = createContext<ShellState>({
   searchOpen: false,
   openSearch: () => {},
   closeSearch: () => {},
+  walletTab: null,
+  openWallet: () => {},
+  closeWallet: () => {},
+  switchWalletTab: () => {},
 });
 
 export const useShell = () => useContext(ShellContext);
@@ -52,6 +62,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const switchAuth = useCallback((mode: AuthMode) => setAuthMode(mode), []);
   const openSearch = useCallback(() => setSearchOpen(true), []);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
+  const [walletTab, setWalletTab] = useState<WalletTab | null>(null);
+  const openWallet = useCallback((tab: WalletTab = "deposit") => setWalletTab(tab), []);
+  const closeWallet = useCallback(() => setWalletTab(null), []);
+  const switchWalletTab = useCallback((tab: WalletTab) => setWalletTab(tab), []);
 
   return (
     <ShellContext.Provider
@@ -67,6 +81,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
         searchOpen,
         openSearch,
         closeSearch,
+        walletTab,
+        openWallet,
+        closeWallet,
+        switchWalletTab,
       }}
     >
       <Sidebar />
@@ -86,6 +104,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <div className="h-[68px] lg:hidden" />
       <AuthModal />
       <SearchModal />
+      <WalletModal />
     </ShellContext.Provider>
   );
 }
