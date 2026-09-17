@@ -1,7 +1,6 @@
-# MineBit Casino — Homepage (Frontend UI Recreation)
+# MineBit Casino — Homepage (Frontend UI)
 
-A faithful frontend-only recreation of the MineBit crypto casino homepage, built from the
-original page markup as the structural and style reference.
+A frontend-only MineBit crypto casino homepage, 
 
 ## Tech stack
 
