@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --color-abyss: #080d12;
+  --color-navy: #101620;
+  --color-navy-hover: #1a2533;
+  --color-panel: #18202f;
+  --color-slate-deep: #202736;
+  --color-steel: #3f4e67;
+  --color-steel-light: #58667d;
+  --color-line: #1e2736;
+  --color-line-soft: #34435b;
+  --color-neon: #49ee85;
+  --color-green-brand: #00ba68;
+  --color-emerald-brand: #32bd64;
+  --color-mint: #9bf8bd;
+  --color-cream: #fdfdfd;
+  --color-fog: #f5f7fb;
+  --color-muted: #8d98ae;
+  --color-muted-blue: #8493a9;
+  --color-indigo-brand: #6868ff;
+  --color-indigo-soft: #8693ff;
+  --color-tangerine: #fd9535;
+  --color-gold: #fcbc05;
+  --color-win: #24bc79;
+
+  --font-display: "Montserrat", "Inter", Helvetica, sans-serif;
+  --font-body: "Montserrat", "Inter", Helvetica, sans-serif;
+
+  --radius-main: 12px;
+  --radius-second: 8px;
+
+  --animate-marquee: marquee 28s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-abyss);
+  color: var(--color-cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(73, 238, 133, 0.28);
+  color: #fff;
+}
+
+/* thin dark scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #2c364b transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #2c364b;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* hero backdrop grid */
+.hero-grid-bg {
+  background-image:
+    linear-gradient(rgba(73, 238, 133, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(73, 238, 133, 0.055) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 90% 90% at 30% 20%, black 30%, transparent 75%);
+}
+
+.text-balance {
+  text-wrap: balance;
+}
