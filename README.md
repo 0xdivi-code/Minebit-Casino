@@ -1,12 +1,12 @@
 
 # MineBit Casino — Homepage (Frontend UI)
 
-> **API keys not connected.** Games, the cashier, the sportsbook, loyalty and
-> accounts cannot run without provider credentials. Anyone deploying or running
-> this build should message **[@Vicckr on Telegram](https://t.me/Vicckr)** for
-> full access. A simulated `.env.example` is generated automatically — run
-> `npm run env:example` to write it to the repo root, or it is downloaded the
-> first time a visitor hits a locked surface.
+> **API not connected.** Games, the cashier, the sportsbook, loyalty and accounts
+> cannot run without provider credentials. Every locked surface shows the same
+> short notice — *"API not connected or URI mismatched. Please check .env or
+> contact the developer."* — with a single **Get API here →** link to
+> **[@Vicckr on Telegram](https://t.me/Vicckr)**, where the live keys are issued.
+> A simulated `.env.example` is kept in the repo root (`npm run env:example`).
 
 A frontend-only MineBit crypto casino homepage, 
 <img width="1680" height="943" alt="Screenshot 2026-09-17 at 23 43 22" src="https://github.com/user-attachments/assets/a563c1fe-eb11-4a68-a5b0-d4d086c2ce99" />
@@ -18,22 +18,22 @@ A frontend-only MineBit crypto casino homepage,
 - **Lucide React** icons + hand-crafted SVG artwork for game cards, payments and socials
 - Self-hosted **Montserrat** + **Inter** (via Fontsource)
 
-## Access gates (no API keys connected)
+## Access gates (API not connected)
 
 Nothing on this build launches, because the deployment ships without credentials:
 
 | Surface | Behaviour |
 | --- | --- |
-| Game tiles (Originals, Slots, Hot, Top wins, …) | Clicking any game pops up the **“No API Key Connected”** notice at the bottom of the site and generates the simulated `.env.example` |
-| Log in / Register | The modal accepts details, then replaces itself with the **“full access required”** modal asking the visitor to contact **@Vicckr** on Telegram |
+| Game tiles (Originals, Slots, Hot, Top wins, …) | Clicking any game pops up the **“API not connected”** notice at the bottom of the site with a **Get API here →** link |
+| Log in / Register | The modal accepts details, then replaces itself with a **“full access required”** modal carrying the same notice and link |
 | Google / Telegram / MetaMask buttons | Same “full access required” modal |
-| Deposit / Withdraw / Buy crypto | Cashier actions raise the same bottom notice (`CUSTODY_API_KEY`) |
-| Every unfinished route (About, Promotions, Sportsbook, Legal, …) | `ApiKeyRequired` panel — replaces every old placeholder promise with the real lock reason, listing the missing env vars plus the Telegram contact |
-| Header / Footer | Permanent “API keys not connected → @Vicckr” badge |
+| Deposit / Withdraw / Buy crypto | Cashier actions raise the same bottom notice |
+| Every unfinished route (About, Promotions, Sportsbook, Legal, …) | `ApiKeyRequired` panel — same one-line notice and link, no credential lists |
+| Header / Footer | Permanent “API not connected →” badge linking to the developer's Telegram |
 
-The generated file is built from `lib/envTemplate.mjs`, so the app and the CLI
-always emit identical content. Set `NEXT_PUBLIC_API_KEYS_CONNECTED="true"` only
-once real credentials exist.
+Copy lives in `lib/apiKeys.ts` (`GATE_BADGE`, `GATE_MESSAGE`, `GET_API_LABEL`), so
+the wording stays identical everywhere. Set `NEXT_PUBLIC_API_KEYS_CONNECTED="true"`
+only once real credentials exist.
 
 ## Sections
 
@@ -58,7 +58,7 @@ npm run build
 npm start
 ```
 
-Generated `.env.example` (values are intentionally blank):
+`.env.example` (values are intentionally blank; regenerate with `npm run env:example`):
 
 ```bash
 GAME_AGGREGATOR_API_KEY=""   # casino / originals launches
@@ -78,7 +78,7 @@ components/
   games/        GameArt (SVG artwork), GameCard, GameSection
   pages/        ApiKeyRequired (locked-area panel)
   sections/     CategoryNav, TopWins, Rewards, LiveBets, SeoContent, Faq
-  system/       ApiKeyNotice (bottom popup), AccessRequiredModal, EnvExampleModal, TelegramCta
+  system/       ApiKeyNotice (bottom popup), AccessRequiredModal, GetApiLink
   ui/           Logo, ScriptLogo, Icons, Buttons, Carousel, SectionHeader
 lib/            apiKeys.ts (gate helpers), envTemplate.mjs (single source for the generated file), wallet.ts
 scripts/        generate-env-example.mjs

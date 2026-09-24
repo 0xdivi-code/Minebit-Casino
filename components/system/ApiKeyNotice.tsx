@@ -2,18 +2,17 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, Download, FileCode2, X } from "lucide-react";
+import { AlertTriangle, X } from "lucide-react";
 import { useShell } from "../layout/AppShell";
-import { CONTACT, CREDENTIAL_KEYS, ENV_EXAMPLE_FILE, downloadEnvExample } from "@/lib/apiKeys";
-import { TelegramPlaneIcon } from "../ui/Icons";
-import { DEFAULT_TELEGRAM_MESSAGE, telegramLink } from "./TelegramCta";
+import { GATE_BADGE, GATE_MESSAGE } from "@/lib/apiKeys";
+import GetApiLink from "./GetApiLink";
 
 /**
- * Bottom-of-the-site popup shown whenever a game tile is clicked while the
- * platform has no API keys connected.
+ * Bottom-of-the-site popup shown when a game (or cashier action) is clicked
+ * while the deployment has no API keys connected.
  */
 export default function ApiKeyNotice() {
-  const { gameNotice, dismissGameNotice, openEnvModal } = useShell();
+  const { gameNotice, dismissGameNotice } = useShell();
 
   useEffect(() => {
     if (!gameNotice) return;
@@ -21,16 +20,7 @@ export default function ApiKeyNotice() {
     return () => window.clearTimeout(timer);
   }, [gameNotice, dismissGameNotice]);
 
-  const isCashier = gameNotice?.area === "cashier";
-  const label = gameNotice?.title
-    ? `“${gameNotice.title}”`
-    : isCashier
-      ? "The cashier"
-      : "This game";
-  const credential = isCashier ? CREDENTIAL_KEYS.custody : CREDENTIAL_KEYS.gameAggregator;
-  const explanation = isCashier
-    ? "can't process payments — the custody key is empty, so no deposit address, withdrawal or order can be created."
-    : "can't launch — the game aggregator key is empty, so no provider session can be created.";
+  const label = gameNotice?.title ? `“${gameNotice.title}”` : "This game";
 
   return (
     <AnimatePresence>
@@ -46,7 +36,7 @@ export default function ApiKeyNotice() {
           <div
             role="status"
             aria-live="polite"
-            className="pointer-events-auto w-full max-w-[760px] rounded-2xl border border-tangerine/50 bg-[#0c1119]/97 p-4 shadow-[0_28px_70px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md"
+            className="pointer-events-auto w-full max-w-[620px] rounded-2xl border border-tangerine/50 bg-[#0c1119]/97 p-4 shadow-[0_28px_70px_-24px_rgba(0,0,0,0.95)] backdrop-blur-md"
           >
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 flex-none items-center justify-center rounded-xl border border-tangerine/50 bg-tangerine/10">
@@ -55,67 +45,22 @@ export default function ApiKeyNotice() {
 
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-bold text-cream">No API Key Connected</p>
+                  <p className="text-sm font-bold text-cream">{label} can&apos;t launch</p>
                   <span className="inline-flex items-center gap-1.5 rounded-md border border-tangerine/60 bg-tangerine/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-tangerine">
                     <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tangerine" />
-                    Locked
+                    {GATE_BADGE}
                   </span>
                 </div>
 
-                <p className="mt-1.5 text-[13px] leading-snug text-muted">
-                  {label} {explanation} <code className="text-cream/90">{credential}</code> is empty (see{" "}
-                  <code className="text-cream/90">.env.example</code>). Contact{" "}
-                  <a
-                    href={telegramLink(DEFAULT_TELEGRAM_MESSAGE)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="font-semibold text-neon hover:underline"
-                  >
-                    {CONTACT.handle} on Telegram
-                  </a>{" "}
-                  for full access.
-                </p>
+                <p className="mt-1.5 text-[13px] leading-snug text-muted">{GATE_MESSAGE}</p>
 
-                {gameNotice.generatedFile && (
-                  <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-navy px-2 py-1 text-[11px] font-semibold text-muted-blue">
-                    <FileCode2 className="h-3.5 w-3.5 text-neon" />
-                    Simulated {ENV_EXAMPLE_FILE} generated — check your downloads.
-                  </p>
-                )}
-
-                <div className="mt-3 flex flex-wrap items-center gap-2">
-                  <a
-                    href={telegramLink(DEFAULT_TELEGRAM_MESSAGE)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="flex items-center justify-center gap-2 rounded-main border border-emerald-brand bg-neon px-3.5 py-2 text-[13px] font-semibold leading-[150%] text-slate-deep transition-colors hover:bg-emerald-brand active:bg-mint"
-                  >
-                    <TelegramPlaneIcon className="h-4 w-4 flex-none" />
-                    Message {CONTACT.handle}
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => downloadEnvExample({ reason: "game", detail: gameNotice.title ?? "game launch" })}
-                    className="flex items-center justify-center gap-2 rounded-main bg-navy px-3.5 py-2 text-[13px] font-semibold leading-[150%] text-muted-blue transition-colors hover:bg-navy-hover hover:text-cream"
-                  >
-                    <Download className="h-4 w-4" />
-                    Download {ENV_EXAMPLE_FILE}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => openEnvModal({ reason: "game", detail: gameNotice.title ?? "game launch" })}
-                    className="flex items-center justify-center gap-2 rounded-main border border-line px-3.5 py-2 text-[13px] font-semibold leading-[150%] text-muted-blue transition-colors hover:border-line-soft hover:text-cream"
-                  >
-                    <FileCode2 className="h-4 w-4" />
-                    View file
-                  </button>
-                </div>
+                <GetApiLink className="mt-3" compact />
               </div>
 
               <button
                 type="button"
                 onClick={dismissGameNotice}
-                aria-label="Dismiss API key notice"
+                aria-label="Dismiss notice"
                 className="flex h-9 w-9 flex-none items-center justify-center rounded-lg border border-line text-muted-blue transition-colors hover:border-line-soft hover:text-cream"
               >
                 <X className="h-4 w-4" />

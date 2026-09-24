@@ -18,7 +18,7 @@ import { useShell, type WalletTab } from "../layout/AppShell";
 import { ChevronDown } from "../ui/Icons";
 import ScriptLogo from "../ui/ScriptLogo";
 import { walletCurrencies, type WalletCurrency, type WalletNetwork } from "@/data/wallet";
-import { CREDENTIAL_KEYS } from "@/lib/apiKeys";
+import { GATE_MESSAGE } from "@/lib/apiKeys";
 
 function CoinBadge({ currency, size = "md" }: { currency: WalletCurrency; size?: "md" | "sm" }) {
   return (
@@ -255,9 +255,7 @@ function DepositPane({ currency, network }: { currency: WalletCurrency; network:
       >
         I&apos;ve sent it — check my balance
       </button>
-      <p className="mt-2 text-center text-[11px] leading-snug text-muted-blue">
-        Deposits need <span className="font-mono text-cream/80">{CREDENTIAL_KEYS.custody}</span>, which is not connected yet.
-      </p>
+      <p className="mt-2 text-center text-[11px] leading-snug text-muted-blue">{GATE_MESSAGE}</p>
 
       <p className="mb-2 mt-6 text-[15px] font-semibold text-cream">Bonuses</p>
       <button

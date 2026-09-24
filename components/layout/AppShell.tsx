@@ -11,8 +11,6 @@ import SearchModal from "../search/SearchModal";
 import WalletModal from "../wallet/WalletModal";
 import ApiKeyNotice from "../system/ApiKeyNotice";
 import AccessRequiredModal from "../system/AccessRequiredModal";
-import EnvExampleModal from "../system/EnvExampleModal";
-import { downloadEnvExampleOnce, type GateReason } from "@/lib/apiKeys";
 
 export type AuthMode = "login" | "register";
 export type WalletTab = "deposit" | "withdraw" | "buy";
@@ -35,14 +33,6 @@ export interface GameNotice {
   title?: string;
   provider?: string;
   area: NoticeArea;
-  /** True when the simulated `.env.example` was generated for this click. */
-  generatedFile?: boolean;
-}
-
-/** Request to show the generated `.env.example`. */
-export interface EnvRequest {
-  reason: GateReason;
-  detail?: string;
 }
 
 interface ShellState {
@@ -65,14 +55,10 @@ interface ShellState {
   accessRequest: AccessRequest | null;
   requestAccess: (request: AccessRequest) => void;
   closeAccessRequest: () => void;
-  /** Bottom "no API key connected" popup. */
+  /** Bottom "API not connected" popup. */
   gameNotice: GameNotice | null;
-  notifyMissingApiKey: (notice?: { title?: string; provider?: string; area?: NoticeArea }) => boolean;
+  notifyMissingApiKey: (notice?: { title?: string; provider?: string; area?: NoticeArea }) => void;
   dismissGameNotice: () => void;
-  /** Generated `.env.example` viewer. */
-  envRequest: EnvRequest | null;
-  openEnvModal: (request?: EnvRequest) => void;
-  closeEnvModal: () => void;
 }
 
 const ShellContext = createContext<ShellState>({
@@ -95,11 +81,8 @@ const ShellContext = createContext<ShellState>({
   requestAccess: () => {},
   closeAccessRequest: () => {},
   gameNotice: null,
-  notifyMissingApiKey: () => false,
+  notifyMissingApiKey: () => {},
   dismissGameNotice: () => {},
-  envRequest: null,
-  openEnvModal: () => {},
-  closeEnvModal: () => {},
 });
 
 export const useShell = () => useContext(ShellContext);
@@ -128,26 +111,13 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [gameNotice, setGameNotice] = useState<GameNotice | null>(null);
   const dismissGameNotice = useCallback(() => setGameNotice(null), []);
   const notifyMissingApiKey = useCallback((notice?: { title?: string; provider?: string; area?: NoticeArea }) => {
-    const area = notice?.area ?? "game";
-    // First locked interaction of the session also drops the simulated
-    // `.env.example` into the visitor's downloads folder.
-    const generatedFile = downloadEnvExampleOnce({
-      reason: area === "cashier" ? "page" : "game",
-      detail: notice?.title ?? (area === "cashier" ? "cashier" : "game launch"),
-    });
     setGameNotice({
       id: Date.now(),
       title: notice?.title,
       provider: notice?.provider,
-      area,
-      generatedFile,
+      area: notice?.area ?? "game",
     });
-    return generatedFile;
   }, []);
-
-  const [envRequest, setEnvRequest] = useState<EnvRequest | null>(null);
-  const openEnvModal = useCallback((request?: EnvRequest) => setEnvRequest(request ?? { reason: "setup" }), []);
-  const closeEnvModal = useCallback(() => setEnvRequest(null), []);
 
   const value = useMemo(
     () => ({
@@ -172,9 +142,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
       gameNotice,
       notifyMissingApiKey,
       dismissGameNotice,
-      envRequest,
-      openEnvModal,
-      closeEnvModal,
     }),
     [
       collapsed,
@@ -197,9 +164,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
       gameNotice,
       notifyMissingApiKey,
       dismissGameNotice,
-      envRequest,
-      openEnvModal,
-      closeEnvModal,
     ]
   );
 
@@ -225,7 +189,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <WalletModal />
       <ApiKeyNotice />
       <AccessRequiredModal />
-      <EnvExampleModal />
     </ShellContext.Provider>
   );
 }

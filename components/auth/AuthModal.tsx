@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useShell } from "../layout/AppShell";
 import { GoogleIcon, MetamaskIcon, TelegramPlaneIcon } from "../ui/Icons";
 import { connectErrorCopy, connectMetaMask, formatAddress } from "@/lib/wallet";
-import { CONTACT, CREDENTIAL_KEYS } from "@/lib/apiKeys";
+import { GATE_BADGE, GATE_MESSAGE } from "@/lib/apiKeys";
 import ScriptLogo from "../ui/ScriptLogo";
 
 type Status = "idle" | "loading" | "success";
@@ -141,22 +141,11 @@ export default function AuthModal() {
               })}
             </div>
 
-            {/* api-key status */}
+            {/* api status */}
             <div className="mt-4 flex items-start gap-2 rounded-xl border border-tangerine/40 bg-tangerine/[0.07] px-3 py-2.5 text-left">
               <KeyRound className="mt-0.5 h-4 w-4 flex-none text-tangerine" />
               <p className="text-[12px] leading-snug text-muted">
-                <span className="font-bold uppercase tracking-wide text-tangerine">API keys not connected</span> —{" "}
-                <span className="font-mono text-[11px] text-muted-blue">{CREDENTIAL_KEYS.auth}</span> is empty, so
-                accounts are demo-only. Contact{" "}
-                <a
-                  href={CONTACT.telegramUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="font-semibold text-neon hover:underline"
-                >
-                  {CONTACT.handle}
-                </a>{" "}
-                on Telegram for full access.
+                <span className="font-bold uppercase tracking-wide text-tangerine">{GATE_BADGE}</span> — {GATE_MESSAGE}
               </p>
             </div>
 
