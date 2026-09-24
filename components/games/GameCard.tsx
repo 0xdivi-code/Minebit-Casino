@@ -5,6 +5,7 @@ import { Heart, Play } from "lucide-react";
 import { useState } from "react";
 import type { Game } from "@/data/games";
 import { cn } from "@/lib/utils";
+import { useShell } from "../layout/AppShell";
 import GameArt from "./GameArt";
 
 const tagStyles: Record<string, string> = {
@@ -15,11 +16,16 @@ const tagStyles: Record<string, string> = {
 
 export default function GameCard({ game, widthClass = "w-[150px] sm:w-[164px] xl:w-[176px]" }: { game: Game; widthClass?: string }) {
   const [liked, setLiked] = useState(false);
+  const { notifyMissingApiKey } = useShell();
 
   return (
     <motion.a
       href="#"
-      onClick={(e) => e.preventDefault()}
+      onClick={(e) => {
+        // No provider credentials connected — no game session can be created.
+        e.preventDefault();
+        notifyMissingApiKey({ title: game.title, provider: game.provider });
+      }}
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className={cn("group block flex-none snap-start", widthClass)}

@@ -6,7 +6,7 @@ import { BtnDark, BtnPrimary } from "../ui/Buttons";
 import { useShell } from "./AppShell";
 
 export default function Header() {
-  const { collapsed, setMobileOpen, openAuth } = useShell();
+  const { collapsed, setMobileOpen, openAuth, openEnvModal } = useShell();
 
   return (
     <header
@@ -28,6 +28,15 @@ export default function Header() {
         <Logo />
 
         <div className="ml-auto flex items-center">
+          <button
+            type="button"
+            onClick={() => openEnvModal({ reason: "setup" })}
+            title="The platform has no provider credentials — click to see the generated .env.example"
+            className="mr-2 hidden items-center gap-2 rounded-main border border-tangerine/40 bg-tangerine/10 px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-tangerine transition-colors hover:border-tangerine lg:flex"
+          >
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-tangerine" />
+            API keys not connected
+          </button>
           <BtnDark onClick={() => openAuth("login")} className="ml-4 hidden px-8! sm:flex">
             Log In
           </BtnDark>

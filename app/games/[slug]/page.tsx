@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
 import SlotsExplorer from "@/components/games/SlotsExplorer";
-import ComingSoon from "@/components/pages/ComingSoon";
+import ApiKeyRequired from "@/components/pages/ApiKeyRequired";
 import { slotsCatalog } from "@/data/games";
 import { gameCategoryTitles } from "@/data/navigation";
 
@@ -32,7 +32,7 @@ export default async function GameCategoryPage({ params }: { params: Promise<{ s
 
   return (
     <AppShell>
-      <ComingSoon title={entry.title} eyebrow={entry.eyebrow} />
+      <ApiKeyRequired title={entry.title} eyebrow={entry.eyebrow} />
     </AppShell>
   );
 }

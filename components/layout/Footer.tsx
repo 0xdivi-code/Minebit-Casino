@@ -4,6 +4,7 @@ import { ArrowUp, Search, ShieldCheck } from "lucide-react";
 import { Logo } from "../ui/Logo";
 import { useShell } from "./AppShell";
 import { cryptoMethods, footerGroups } from "@/data/content";
+import { CONTACT } from "@/lib/apiKeys";
 import { DiscordIcon, FacebookIcon, InstagramIcon, TelegramIcon, XSocialIcon } from "../ui/Icons";
 
 const socials = [
@@ -35,6 +36,20 @@ export default function Footer() {
                 support@minebit.com
               </a>
               .
+            </p>
+
+            <p className="mt-4 max-w-[420px] rounded-main border border-tangerine/40 bg-tangerine/[0.07] px-3 py-2.5 text-xs leading-relaxed text-muted">
+              <span className="font-bold uppercase tracking-wide text-tangerine">API keys not connected</span> — this build
+              runs without provider credentials. Contact{" "}
+              <a
+                href={CONTACT.telegramUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="font-semibold text-neon hover:underline"
+              >
+                {CONTACT.handle}
+              </a>{" "}
+              on Telegram for full access.
             </p>
 
             <p className="mt-6 text-sm font-bold uppercase text-fog">Payment Methods</p>

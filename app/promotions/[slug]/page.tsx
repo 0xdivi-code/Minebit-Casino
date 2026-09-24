@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
-import ComingSoon from "@/components/pages/ComingSoon";
+import ApiKeyRequired from "@/components/pages/ApiKeyRequired";
 import { promoTitles } from "@/data/navigation";
 
 const blurbs: Record<string, string> = {
@@ -26,7 +26,7 @@ export default async function PromoPage({ params }: { params: Promise<{ slug: st
 
   return (
     <AppShell>
-      <ComingSoon title={entry.title} eyebrow={entry.eyebrow} blurb={blurbs[slug]} />
+      <ApiKeyRequired title={entry.title} eyebrow={entry.eyebrow} blurb={blurbs[slug]} />
     </AppShell>
   );
 }
