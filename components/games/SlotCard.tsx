@@ -4,16 +4,22 @@ import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import { useState } from "react";
 import type { Game } from "@/data/games";
+import { useShell } from "../layout/AppShell";
 import GameArt from "./GameArt";
 
 /** Portrait slot tile with provider strip + big title, as on the Slots page. */
 export default function SlotCard({ game }: { game: Game }) {
   const [liked, setLiked] = useState(false);
+  const { notifyMissingApiKey } = useShell();
 
   return (
     <motion.a
       href="#"
-      onClick={(e) => e.preventDefault()}
+      onClick={(e) => {
+        // Games need the aggregator key — surface the "no API key" popup instead.
+        e.preventDefault();
+        notifyMissingApiKey({ title: game.title, provider: game.provider });
+      }}
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 400, damping: 28 }}
       className="group relative block overflow-hidden rounded-second border border-transparent transition-colors hover:border-line-soft"

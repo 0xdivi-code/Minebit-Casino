@@ -2,31 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Eye, EyeOff, Loader2, X } from "lucide-react";
+import { Check, Eye, EyeOff, KeyRound, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useShell } from "../layout/AppShell";
 import { GoogleIcon, MetamaskIcon, TelegramPlaneIcon } from "../ui/Icons";
 import { connectErrorCopy, connectMetaMask, formatAddress } from "@/lib/wallet";
+import { GATE_BADGE, GATE_MESSAGE } from "@/lib/apiKeys";
+import ScriptLogo from "../ui/ScriptLogo";
 
 type Status = "idle" | "loading" | "success";
-
-function ScriptLogo() {
-  return (
-    <span className="relative inline-block text-[34px] font-extrabold italic leading-none tracking-tight text-white">
-      <svg viewBox="0 0 18 22" aria-hidden className="absolute -left-4 top-1 h-5 w-4">
-        <path d="M14 1L4 21l3-1 9-18z" fill="#F5A623" />
-        <path d="M17 5L9 21l2.5-.8L18 6z" fill="#F5A623" opacity="0.55" />
-      </svg>
-      MineBit
-    </span>
-  );
-}
 
 const inputCls =
   "w-full rounded-xl border border-line/70 bg-[#141b29] px-4 py-3.5 text-sm font-medium text-cream placeholder:text-[#5b6b85] placeholder:font-normal outline-none transition-colors focus:border-neon/60";
 
 export default function AuthModal() {
-  const { authMode, closeAuth, switchAuth } = useShell();
+  const { authMode, closeAuth, switchAuth, requestAccess } = useShell();
   const open = authMode !== null;
   const isRegister = authMode === "register";
 
@@ -71,8 +61,19 @@ export default function AuthModal() {
     e.preventDefault();
     if (status !== "idle") return;
     setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 900);
-    window.setTimeout(() => closeAuth(), 2100);
+    const identifier = email.trim() || undefined;
+    // Simulated round-trip: the details are "accepted", but the platform cannot
+    // activate the account without API keys — hand the visitor to the developer.
+    window.setTimeout(() => {
+      setStatus("success");
+      closeAuth();
+      requestAccess({ mode: authMode ?? "login", identifier });
+    }, 900);
+  };
+
+  const socialGate = (provider: string) => {
+    closeAuth();
+    requestAccess({ mode: authMode ?? "register", provider });
   };
 
   return (
@@ -140,8 +141,16 @@ export default function AuthModal() {
               })}
             </div>
 
+            {/* api status */}
+            <div className="mt-4 flex items-start gap-2 rounded-xl border border-tangerine/40 bg-tangerine/[0.07] px-3 py-2.5 text-left">
+              <KeyRound className="mt-0.5 h-4 w-4 flex-none text-tangerine" />
+              <p className="text-[12px] leading-snug text-muted">
+                <span className="font-bold uppercase tracking-wide text-tangerine">{GATE_BADGE}</span> — {GATE_MESSAGE}
+              </p>
+            </div>
+
             {/* form */}
-            <form onSubmit={submit} className="mt-6">
+            <form onSubmit={submit} className="mt-5">
               <label htmlFor="auth-email" className="mb-2 block text-[15px] font-semibold text-cream">
                 Email
               </label>
@@ -233,11 +242,9 @@ export default function AuthModal() {
                 {status === "loading" && <Loader2 className="h-5 w-5 animate-spin" />}
                 {status === "success" && <Check className="h-5 w-5" strokeWidth={3} />}
                 {status === "loading"
-                  ? "Please wait…"
+                  ? "Checking your details…"
                   : status === "success"
-                    ? isRegister
-                      ? "Account created!"
-                      : "Welcome back!"
+                    ? "Access required — opening…"
                     : isRegister
                       ? "Register"
                       : "Log in"}
@@ -250,6 +257,7 @@ export default function AuthModal() {
               <button
                 type="button"
                 aria-label="Continue with Google"
+                onClick={() => socialGate("Google OAuth")}
                 className="flex items-center justify-center rounded-xl bg-navy py-3.5 transition-colors hover:bg-navy-hover"
               >
                 <GoogleIcon className="h-6 w-6" />
@@ -257,6 +265,7 @@ export default function AuthModal() {
               <button
                 type="button"
                 aria-label="Continue with Telegram"
+                onClick={() => socialGate("Telegram login")}
                 className="flex items-center justify-center rounded-xl bg-navy py-3.5 transition-colors hover:bg-navy-hover"
               >
                 <TelegramPlaneIcon className="h-6 w-6" />

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
-import ComingSoon from "@/components/pages/ComingSoon";
+import ApiKeyRequired from "@/components/pages/ApiKeyRequired";
 import { originals, tapTrader, type Game } from "@/data/games";
 
 const bySlug: Record<string, Game> = {
@@ -39,10 +39,10 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
 
   return (
     <AppShell>
-      <ComingSoon
+      <ApiKeyRequired
         title={game.title}
         eyebrow="MineBit Originals"
-        blurb={`${game.title} is a provably fair MineBit Original. The playable demo is being prepared — check back soon.`}
+        blurb={`${game.title} is a provably fair MineBit Original. Launching it needs the game aggregator credentials, and this deployment has no API keys connected.`}
         art={game}
       />
     </AppShell>

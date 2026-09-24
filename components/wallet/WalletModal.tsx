@@ -16,19 +16,9 @@ import QRCode from "qrcode";
 import { cn } from "@/lib/utils";
 import { useShell, type WalletTab } from "../layout/AppShell";
 import { ChevronDown } from "../ui/Icons";
+import ScriptLogo from "../ui/ScriptLogo";
 import { walletCurrencies, type WalletCurrency, type WalletNetwork } from "@/data/wallet";
-
-function ScriptLogo() {
-  return (
-    <span className="relative inline-block text-[34px] font-extrabold italic leading-none tracking-tight text-white">
-      <svg viewBox="0 0 18 22" aria-hidden className="absolute -left-4 top-1 h-5 w-4">
-        <path d="M14 1L4 21l3-1 9-18z" fill="#F5A623" />
-        <path d="M17 5L9 21l2.5-.8L18 6z" fill="#F5A623" opacity="0.55" />
-      </svg>
-      MineBit
-    </span>
-  );
-}
+import { GATE_MESSAGE } from "@/lib/apiKeys";
 
 function CoinBadge({ currency, size = "md" }: { currency: WalletCurrency; size?: "md" | "sm" }) {
   return (
@@ -183,6 +173,7 @@ function NetworkSelect({
 type Status = "idle" | "loading" | "success";
 
 function DepositPane({ currency, network }: { currency: WalletCurrency; network: WalletNetwork }) {
+  const { notifyMissingApiKey, closeWallet } = useShell();
   const [qr, setQr] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -254,6 +245,18 @@ function DepositPane({ currency, network }: { currency: WalletCurrency; network:
         </div>
       </div>
 
+      <button
+        type="button"
+        onClick={() => {
+          closeWallet();
+          notifyMissingApiKey({ area: "cashier", title: `${currency.code} deposit` });
+        }}
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-main bg-navy px-4 py-3.5 text-sm font-semibold text-muted-blue transition-colors hover:bg-navy-hover hover:text-cream"
+      >
+        I&apos;ve sent it — check my balance
+      </button>
+      <p className="mt-2 text-center text-[11px] leading-snug text-muted-blue">{GATE_MESSAGE}</p>
+
       <p className="mb-2 mt-6 text-[15px] font-semibold text-cream">Bonuses</p>
       <button
         type="button"
@@ -270,13 +273,18 @@ function DepositPane({ currency, network }: { currency: WalletCurrency; network:
 }
 
 function WithdrawPane({ currency, network }: { currency: WalletCurrency; network: WalletNetwork }) {
+  const { notifyMissingApiKey, closeWallet } = useShell();
   const [status, setStatus] = useState<Status>("idle");
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (status !== "idle") return;
     setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 1000);
-    window.setTimeout(() => setStatus("idle"), 2600);
+    // No custody key connected — withdrawals cannot be broadcast.
+    window.setTimeout(() => {
+      setStatus("idle");
+      closeWallet();
+      notifyMissingApiKey({ area: "cashier", title: `${currency.code} withdrawal` });
+    }, 900);
   };
   return (
     <form onSubmit={submit}>
@@ -319,7 +327,7 @@ function WithdrawPane({ currency, network }: { currency: WalletCurrency; network
       >
         {status === "loading" && <Loader2 className="h-5 w-5 animate-spin" />}
         {status === "success" && <Check className="h-5 w-5" strokeWidth={3} />}
-        {status === "loading" ? "Processing…" : status === "success" ? "Withdrawal requested!" : "Withdraw"}
+        {status === "loading" ? "Checking API keys…" : "Withdraw"}
       </motion.button>
     </form>
   );
@@ -335,12 +343,17 @@ function BuyPane({ currency, onCurrency }: { currency: WalletCurrency; onCurrenc
     return out >= 1000 ? out.toLocaleString(undefined, { maximumFractionDigits: 2 }) : out.toFixed(out >= 1 ? 2 : 6);
   }, [pay, currency]);
 
+  const { notifyMissingApiKey, closeWallet } = useShell();
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (status !== "idle") return;
     setStatus("loading");
-    window.setTimeout(() => setStatus("success"), 1000);
-    window.setTimeout(() => setStatus("idle"), 2600);
+    // No custody / on-ramp key connected — the order cannot be created.
+    window.setTimeout(() => {
+      setStatus("idle");
+      closeWallet();
+      notifyMissingApiKey({ area: "cashier", title: `Buy ${currency.code}` });
+    }, 900);
   };
 
   return (
@@ -397,7 +410,7 @@ function BuyPane({ currency, onCurrency }: { currency: WalletCurrency; onCurrenc
       >
         {status === "loading" && <Loader2 className="h-5 w-5 animate-spin" />}
         {status === "success" && <Check className="h-5 w-5" strokeWidth={3} />}
-        {status === "loading" ? "Redirecting…" : status === "success" ? "Order created!" : "Continue"}
+        {status === "loading" ? "Checking API keys…" : "Continue"}
       </motion.button>
       <p className="mt-3 text-center text-xs text-muted-blue">Card, Apple Pay and Google Pay accepted via provider.</p>
     </form>

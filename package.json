@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "env:example": "node scripts/generate-env-example.mjs",
     "lint": "eslint"
   },
   "dependencies": {

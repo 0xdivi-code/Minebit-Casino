@@ -1,9 +1,10 @@
 "use client";
 
-import { ArrowUp, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight, ArrowUp, Search, ShieldCheck } from "lucide-react";
 import { Logo } from "../ui/Logo";
 import { useShell } from "./AppShell";
 import { cryptoMethods, footerGroups } from "@/data/content";
+import { CONTACT, GATE_BADGE, GATE_MESSAGE, GET_API_LABEL } from "@/lib/apiKeys";
 import { DiscordIcon, FacebookIcon, InstagramIcon, TelegramIcon, XSocialIcon } from "../ui/Icons";
 
 const socials = [
@@ -35,6 +36,19 @@ export default function Footer() {
                 support@minebit.com
               </a>
               .
+            </p>
+
+            <p className="mt-4 max-w-[420px] rounded-main border border-tangerine/40 bg-tangerine/[0.07] px-3 py-2.5 text-xs leading-relaxed text-muted">
+              <span className="font-bold uppercase tracking-wide text-tangerine">{GATE_BADGE}</span> — {GATE_MESSAGE}{" "}
+              <a
+                href={CONTACT.telegramUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-flex items-center gap-1 font-semibold text-neon hover:underline"
+              >
+                {GET_API_LABEL}
+                <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.6} />
+              </a>
             </p>
 
             <p className="mt-6 text-sm font-bold uppercase text-fog">Payment Methods</p>

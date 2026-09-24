@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, useCallback, useContext, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -9,9 +9,31 @@ import Footer from "./Footer";
 import AuthModal from "../auth/AuthModal";
 import SearchModal from "../search/SearchModal";
 import WalletModal from "../wallet/WalletModal";
+import ApiKeyNotice from "../system/ApiKeyNotice";
+import AccessRequiredModal from "../system/AccessRequiredModal";
 
 export type AuthMode = "login" | "register";
 export type WalletTab = "deposit" | "withdraw" | "buy";
+
+/** Raised after a visitor submits the sign-in / registration form. */
+export interface AccessRequest {
+  mode: AuthMode;
+  /** Whatever identifier the visitor typed (only used to personalise the copy). */
+  identifier?: string;
+  /** Set when a social provider button (Google / Telegram) was used instead. */
+  provider?: string;
+}
+
+/** Which locked surface raised the notice. */
+export type NoticeArea = "game" | "cashier";
+
+/** Small popup shown at the bottom of the site when a feature can't start. */
+export interface GameNotice {
+  id: number;
+  title?: string;
+  provider?: string;
+  area: NoticeArea;
+}
 
 interface ShellState {
   collapsed: boolean;
@@ -29,6 +51,14 @@ interface ShellState {
   openWallet: (tab?: WalletTab) => void;
   closeWallet: () => void;
   switchWalletTab: (tab: WalletTab) => void;
+  /** Post sign-in / registration "full access required" gate. */
+  accessRequest: AccessRequest | null;
+  requestAccess: (request: AccessRequest) => void;
+  closeAccessRequest: () => void;
+  /** Bottom "API not connected" popup. */
+  gameNotice: GameNotice | null;
+  notifyMissingApiKey: (notice?: { title?: string; provider?: string; area?: NoticeArea }) => void;
+  dismissGameNotice: () => void;
 }
 
 const ShellContext = createContext<ShellState>({
@@ -47,6 +77,12 @@ const ShellContext = createContext<ShellState>({
   openWallet: () => {},
   closeWallet: () => {},
   switchWalletTab: () => {},
+  accessRequest: null,
+  requestAccess: () => {},
+  closeAccessRequest: () => {},
+  gameNotice: null,
+  notifyMissingApiKey: () => {},
+  dismissGameNotice: () => {},
 });
 
 export const useShell = () => useContext(ShellContext);
@@ -67,26 +103,72 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const closeWallet = useCallback(() => setWalletTab(null), []);
   const switchWalletTab = useCallback((tab: WalletTab) => setWalletTab(tab), []);
 
+  // ---- API-key gates -------------------------------------------------------
+  const [accessRequest, setAccessRequest] = useState<AccessRequest | null>(null);
+  const requestAccess = useCallback((request: AccessRequest) => setAccessRequest(request), []);
+  const closeAccessRequest = useCallback(() => setAccessRequest(null), []);
+
+  const [gameNotice, setGameNotice] = useState<GameNotice | null>(null);
+  const dismissGameNotice = useCallback(() => setGameNotice(null), []);
+  const notifyMissingApiKey = useCallback((notice?: { title?: string; provider?: string; area?: NoticeArea }) => {
+    setGameNotice({
+      id: Date.now(),
+      title: notice?.title,
+      provider: notice?.provider,
+      area: notice?.area ?? "game",
+    });
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      collapsed,
+      toggleCollapsed,
+      mobileOpen,
+      setMobileOpen,
+      authMode,
+      openAuth,
+      closeAuth,
+      switchAuth,
+      searchOpen,
+      openSearch,
+      closeSearch,
+      walletTab,
+      openWallet,
+      closeWallet,
+      switchWalletTab,
+      accessRequest,
+      requestAccess,
+      closeAccessRequest,
+      gameNotice,
+      notifyMissingApiKey,
+      dismissGameNotice,
+    }),
+    [
+      collapsed,
+      toggleCollapsed,
+      mobileOpen,
+      authMode,
+      openAuth,
+      closeAuth,
+      switchAuth,
+      searchOpen,
+      openSearch,
+      closeSearch,
+      walletTab,
+      openWallet,
+      closeWallet,
+      switchWalletTab,
+      accessRequest,
+      requestAccess,
+      closeAccessRequest,
+      gameNotice,
+      notifyMissingApiKey,
+      dismissGameNotice,
+    ]
+  );
+
   return (
-    <ShellContext.Provider
-      value={{
-        collapsed,
-        toggleCollapsed,
-        mobileOpen,
-        setMobileOpen,
-        authMode,
-        openAuth,
-        closeAuth,
-        switchAuth,
-        searchOpen,
-        openSearch,
-        closeSearch,
-        walletTab,
-        openWallet,
-        closeWallet,
-        switchWalletTab,
-      }}
-    >
+    <ShellContext.Provider value={value}>
       <Sidebar />
       <Header />
       <div
@@ -105,6 +187,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <AuthModal />
       <SearchModal />
       <WalletModal />
+      <ApiKeyNotice />
+      <AccessRequiredModal />
     </ShellContext.Provider>
   );
 }

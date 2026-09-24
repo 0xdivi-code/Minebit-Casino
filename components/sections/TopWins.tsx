@@ -7,12 +7,18 @@ import { topWins, type TopWin } from "@/data/games";
 import Carousel, { CarouselApi, CarouselNavButtons, CarouselNavState } from "../ui/Carousel";
 import SectionHeader from "../ui/SectionHeader";
 import GameArt from "../games/GameArt";
+import { useShell } from "../layout/AppShell";
 
 function WinnerCard({ win }: { win: TopWin }) {
+  const { notifyMissingApiKey } = useShell();
+
   return (
     <motion.a
       href="#"
-      onClick={(e) => e.preventDefault()}
+      onClick={(e) => {
+        e.preventDefault();
+        notifyMissingApiKey({ title: win.game.title, provider: win.game.provider });
+      }}
       whileHover={{ y: -2 }}
       className="flex h-[88px] w-[221px] max-w-[221px] flex-none snap-start items-center gap-3 overflow-hidden rounded-second border border-line bg-navy p-2 transition-colors hover:border-line-soft"
     >
