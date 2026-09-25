@@ -1,4 +1,3 @@
-import { Cherry, Dices, Flame, Radio, Sparkles, Zap } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import Hero from "@/components/hero/Hero";
 import CategoryNav from "@/components/sections/CategoryNav";
@@ -16,12 +15,48 @@ export default function Home() {
       <Hero />
       <CategoryNav />
       <TopWins />
-      <GameSection icon={<Dices />} title="Originals" count={15} games={originals} viewAllHref="/games/minebit-originals" />
-      <GameSection icon={<Cherry />} title="Slots" count={5376} games={slots} viewAllHref="/games/slots" />
-      <GameSection icon={<Flame />} title="Hot Games" count={210} games={hotGames} viewAllHref="/games/popular" />
-      <GameSection icon={<Sparkles />} title="Recommended" count={176} games={recommended} viewAllHref="/games/recommended" />
-      <GameSection icon={<Zap />} title="New Releases" count={1068} games={newReleases} viewAllHref="/games/new" />
-      <GameSection icon={<Radio />} title="Live" count={342} games={liveCasino} viewAllHref="/games/live-casino" />
+      <GameSection
+        iconSrc="/assets/icons/originals.svg"
+        title="Originals"
+        count={15}
+        games={originals}
+        viewAllHref="/games/minebit-originals"
+      />
+      <GameSection
+        iconSrc="/assets/icons/slots.svg"
+        title="Slots"
+        count={5376}
+        games={slots}
+        viewAllHref="/games/slots"
+      />
+      <GameSection
+        iconSrc="/assets/icons/hot.svg"
+        title="Hot Games"
+        count={210}
+        games={hotGames}
+        viewAllHref="/games/popular"
+      />
+      <GameSection
+        iconSrc="/assets/icons/recommended.svg"
+        title="Recommended"
+        count={176}
+        games={recommended}
+        viewAllHref="/games/recommended"
+      />
+      <GameSection
+        iconSrc="/assets/icons/new-releases.svg"
+        title="New Releases"
+        count={1068}
+        games={newReleases}
+        viewAllHref="/games/new"
+      />
+      <GameSection
+        iconSrc="/assets/icons/live.svg"
+        title="Live"
+        count={342}
+        games={liveCasino}
+        viewAllHref="/games/live-casino"
+      />
       <Rewards />
       <LiveBets />
       <SeoContent />

@@ -2,22 +2,24 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bolt, Clock3, Crown, Layers, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import { rewardTabs } from "@/data/content";
 import { cn } from "@/lib/utils";
 
-const tabIcons: Record<string, typeof Bolt> = {
-  "clock-star": Clock3,
-  bolt: Bolt,
-  crown: Crown,
-  layers: Layers,
-  shield: ShieldCheck,
+const tabIconSrc: Record<string, string> = {
+  "clock-star": "/assets/icons/clock-star.svg",
+  bolt: "/assets/icons/recurring-rewards.svg",
+  crown: "/assets/icons/vip-transfers.svg",
+  layers: "/assets/icons/level-up-bonuses.svg",
+  shield: "/assets/icons/cashback-deals.svg",
 };
+
+const FALLBACK_ICON_SRC = tabIconSrc.bolt;
 
 export default function Rewards() {
   const [active, setActive] = useState(rewardTabs[0].id);
   const tab = rewardTabs.find((t) => t.id === active) ?? rewardTabs[0];
-  const HeadingIcon = tabIcons[tab.icon] ?? Bolt;
+  const headingIconSrc = tabIconSrc[tab.icon] ?? FALLBACK_ICON_SRC;
 
   return (
     <section aria-label="Rewards" className="mt-14">
@@ -37,7 +39,7 @@ export default function Rewards() {
       {/* tabs */}
       <div role="tablist" aria-label="Rewards" className="no-scrollbar mt-8 flex gap-2 overflow-x-auto pb-1">
         {rewardTabs.map((t) => {
-          const Icon = tabIcons[t.icon] ?? Bolt;
+          const iconSrc = tabIconSrc[t.icon] ?? FALLBACK_ICON_SRC;
           const selected = t.id === active;
           return (
             <button
@@ -52,7 +54,15 @@ export default function Rewards() {
                   : "border-transparent bg-navy text-muted-blue hover:bg-navy-hover hover:text-cream"
               )}
             >
-              <Icon className={cn("h-5 w-5", selected ? "text-neon" : "text-muted-blue")} strokeWidth={1.9} />
+              <Image
+                src={iconSrc}
+                alt=""
+                width={20}
+                height={20}
+                unoptimized
+                aria-hidden
+                className={cn("h-5 w-5", selected ? "text-neon" : "text-muted-blue")}
+              />
               {t.title}
             </button>
           );
@@ -72,8 +82,16 @@ export default function Rewards() {
         >
           <div className="max-w-[640px] flex-1">
             <div className="mb-6 flex items-center gap-4">
-              <span className="flex h-[50px] w-[50px] flex-none items-center justify-center rounded-main border border-line bg-navy">
-                <HeadingIcon className="h-6 w-6 text-gold" strokeWidth={1.9} />
+              <span className="flex h-[50px] w-[50px] flex-none items-center justify-center rounded-main border border-line bg-navy text-gold">
+                <Image
+                  src={headingIconSrc}
+                  alt=""
+                  width={24}
+                  height={24}
+                  unoptimized
+                  aria-hidden
+                  className="h-6 w-6"
+                />
               </span>
               <div>
                 <h4 className="text-2xl font-semibold text-cream md:text-[34px]">{tab.heading}</h4>

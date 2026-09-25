@@ -49,5 +49,20 @@ components/
 lib/            apiKeys.ts (gate helpers), envTemplate.mjs (single source for the generated file), wallet.ts
 scripts/        generate-env-example.mjs
 data/           games.ts (all card data), content.ts (footer, FAQ, tabs)
-public/assets/  hero banner artwork
+public/assets/  hero banner artwork + icons/ (category, section & rewards SVG icon set)
 ```
+
+## Images & icons
+
+All homepage imagery is local — nothing is pulled from minebit.com at runtime.
+
+| Area | Files |
+| --- | --- |
+| Hero feature cards (Casino / Sport) | `public/assets/casino_banner.jpg`, `public/assets/sport_banner.jpg` |
+| Category nav + game-section headers | `public/assets/icons/{slots,originals,live-casino,new-releases,themes,hot,recommended,live,top-wins}.svg` |
+| Rewards tabs | `public/assets/icons/{clock-star,recurring-rewards,vip-transfers,level-up-bonuses,cashback-deals}.svg` |
+| Game tiles | crafted SVG artwork in `components/games/GameArt.tsx` (deterministic per game) |
+
+The icon SVGs stroke `currentColor`, so they inherit the surrounding text colour
+(`text-muted-blue` at rest, `text-neon` when a tab is active). To swap in different
+artwork, replace the files under the same names — no component changes needed.

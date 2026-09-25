@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy } from "lucide-react";
 import { topWins, type TopWin } from "@/data/games";
 import Carousel, { CarouselApi, CarouselNavButtons, CarouselNavState } from "../ui/Carousel";
 import SectionHeader from "../ui/SectionHeader";
@@ -55,7 +54,7 @@ export default function TopWins() {
       data-is-recent-winners
     >
       <SectionHeader
-        icon={<Trophy />}
+        iconSrc="/assets/icons/top-wins.svg"
         title="Top wins"
         nav={
           <CarouselNavButtons

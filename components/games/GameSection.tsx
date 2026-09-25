@@ -9,14 +9,23 @@ import SectionHeader from "../ui/SectionHeader";
 import GameCard from "./GameCard";
 
 interface GameSectionProps {
-  icon: ReactNode;
+  icon?: ReactNode;
+  /** Path to an image icon (public/assets/icons/*.svg) — takes over from `icon`. */
+  iconSrc?: string;
   title: string;
   count?: number | string;
   games: Game[];
   viewAllHref: string;
 }
 
-export default function GameSection({ icon, title, count, games, viewAllHref }: GameSectionProps) {
+export default function GameSection({
+  icon,
+  iconSrc,
+  title,
+  count,
+  games,
+  viewAllHref,
+}: GameSectionProps) {
   const apiRef = useRef<CarouselApi | null>(null);
   const [nav, setNav] = useState<CarouselNavState>({ canPrev: false, canNext: true });
 
@@ -31,6 +40,7 @@ export default function GameSection({ icon, title, count, games, viewAllHref }: 
     >
       <SectionHeader
         icon={icon}
+        iconSrc={iconSrc}
         title={title}
         count={count}
         viewAllHref={viewAllHref}
